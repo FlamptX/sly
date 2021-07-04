@@ -3,9 +3,10 @@ from discord.ext import commands, menus
 
 import asyncio
 import random
+import aiohttp
 
 from core import utils
-from core.enums import Emoji, Color
+from core.enums import Emoji, Color, NSFWStatus
 
 
 class PaginateConfessionChannelMenu(menus.ListPageSource):
@@ -45,6 +46,31 @@ class Confessions(commands.Cog):
 
         return eligible
 
+    async def detect_nsfw(self, content_url):
+        url = self.bot.config.nsfw_detection_api
+
+        payload = '{"url": "'+content_url+'"}'
+        headers = {
+            'content-type': "application/json",
+            'x-rapidapi-key': self.bot.config.nsfw_detection_api_key,
+            'x-rapidapi-host': "nsfw-image-classification1.p.rapidapi.com"
+            }
+
+        async with aiohttp.ClientSession() as session:
+            response = await session.post(url, data=payload, headers=headers)
+
+        if response.status == 200:
+            json = await response.json()
+            if round(json['NSFW_Prob']) == 1:
+                return NSFWStatus.nsfw
+            elif round(json['NSFW_Prob']) == 0:
+                return NSFWStatus.not_nsfw
+            else:
+                return NSFWStatus.undetectable
+
+        else:
+            return NSFWStatus.undetectable
+
 
     @commands.command(
         help='Post a completely anonymous confession in the confession channel. This command only work in DMs!',
@@ -58,9 +84,15 @@ class Confessions(commands.Cog):
             await ctx.send("Keep your confessions private! This command only works in my DMs.")
             return
 
-        if not message:
-            await ctx.send("You gotta specify a confession that you want to post.")
+        if not message and len(ctx.message.attachments) <= 0:
+            await ctx.send("You gotta specify a confession that you want to post or at least attach an image.")
             return
+
+        if len(ctx.message.attachments):
+            image = ctx.message.attachments[0]
+            if not image.content_type.startswith('image/'):
+                await ctx.send("Hey you can only add images in your confessions.")
+                return
 
         check_blacklist = await utils.evalsql(db='sqlite/blacklist.db', sql='SELECT * FROM confessions_users where user_id = ?', vals=(ctx.author.id,), fetch='one')
         if check_blacklist:
@@ -104,14 +136,43 @@ class Confessions(commands.Cog):
             break
 
         guild_config = await self.get_confessions_config(guild)
+
+        if len(ctx.message.attachments) >= 1:
+            if any([guild_config['allow_images'], guild_config['allow_nsfw']]):
+                pass
+            else:
+                await ctx.send("You cannot include images in your confessions for that server because moderators have disabled it. If you are a moderator, you can use `sly config confessions allow-images` command to allow images.")
+                return
+
+            image = ctx.message.attachments[0]
+
+            if guild_config['allow_images'] and not guild_config['allow_nsfw']:
+                check = await self.detect_nsfw(image.url)
+                if check in [NSFWStatus.nsfw, NSFWStatus.undetectable]:
+                    await ctx.send("Way too spicy there! The server you are trying to posting the confessions in does not allow NSFW images and according to my sources this image seems to be NSFW.")
+                    return
+                else:
+                    pass
+
+            elif guild_config['allow_images'] and guild_config['allow_nsfw']:
+                pass
+        else:
+            image = None
+
         channel = guild.get_channel(guild_config['channel_id'])
         confession_id = random.randint(1000, 9999)
+
+        embed = discord.Embed()
         embed.set_author(name="Confession #{}".format(confession_id))
         embed.description = message
+
         if guild_config['embed_color'] == 0:
             embed.color = discord.Color.random()
         else:
             embed.color = guild_config['embed_color']
+
+        if image != None:
+            embed.set_image(url=image.url)
 
         embed.set_footer(text='Use "report-confession" command to report this confession if it is offending.')
         await channel.send(embed=embed)
