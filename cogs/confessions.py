@@ -23,7 +23,10 @@ class PaginateConfessionChannelMenu(menus.ListPageSource):
         
         return embed
 
-class Confessions(commands.Cog):
+class Confessions(commands.Cog,
+    name='Confessions',
+    description='Make confession channel and post completely anonymous confessions that neither moderators nor server owner can find out who posted.'
+    ):
     def __init__(self, bot):
         self.bot = bot
 
@@ -111,7 +114,7 @@ class Confessions(commands.Cog):
         if len(guilds) == 0:
             embed = discord.Embed(title="No servers found", description="I cannot find any servers in which you can post a confessions. There are some potential causes:\n\n-- None of your servers has setup confessions in the server.\n-- You have been blacklisted from posting confessions.")
             embed.add_field(name="What can you do as a server member?", value="You can ask the server moderators of the server in which you want to post confessions. Most probably confessions might not be setup or disabled or you might be blacklisted.", inline=False)
-            embed.add_field(name="What can you do as a server owner/moderator?", value="You can setup confessions in your server by using `sly config confessions setup` command.", inline=False)
+            embed.add_field(name="What can you do as a server owner/moderator?", value="You can setup confessions in your server by using `sly setup-confessions` command.", inline=False)
             await ctx.send(embed=embed)
             return
 
@@ -146,7 +149,7 @@ class Confessions(commands.Cog):
             if any([guild_config['allow_images'], guild_config['allow_nsfw']]):
                 pass
             else:
-                await ctx.send("You cannot include images in your confessions for that server because moderators have disabled it. If you are a moderator, you can use `sly config confessions allow-images` command to allow images.")
+                await ctx.send("You cannot include images in your confessions for that server because moderators have disabled it. If you are a moderator, you can use `sly allow-images-confessions` command to allow images.")
                 return
 
             image = ctx.message.attachments[0]
@@ -154,7 +157,7 @@ class Confessions(commands.Cog):
             if guild_config['allow_images'] and not guild_config['allow_nsfw']:
                 check = await self.detect_nsfw(image.url)
                 if check in [NSFWStatus.nsfw, NSFWStatus.undetectable]:
-                    await ctx.send("Way too spicy there! The server you are trying to posting the confessions in does not allow NSFW images and according to my sources this image seems to be NSFW.")
+                    await ctx.send("Way too spicy there! The server you are trying to posting the confessions in does not allow NSFW images and according to my sources this image seems to be NSFW. If you are a server moderator, you can use `sly allow-nsfw-confessions` command to allow NSFW confessions.")
                     return
                 else:
                     pass
@@ -182,6 +185,68 @@ class Confessions(commands.Cog):
         embed.set_footer(text='Use "report-confession" command to report this confession if it is offending.')
         await channel.send(embed=embed)
         await ctx.send("Kaboom! Your completely anonymous confession has been sent in <#{0.id}>.".format(channel))
+
+    @commands.command(name='setup-confessions',
+        help=utils.createhelp('Sets up confession channel in the server.', '`MANAGE_SERVER`'),
+        description="`channel` (optional): The channel to setup for confessions.",
+        brief="/confessions/setup",
+        usage="setup-confessions [channel]"
+        )
+    async def setupconfessions(self, ctx, channel: discord.TextChannel = None):
+        if not channel:
+            embed = discord.Embed(title="Setting up Confessions • Channel", description="Welcome to confessions setup menu, Real quick, Mention the text channel where your members will post the confessions.")
+            await ctx.send(embed=embed)
+            
+            attempts = 0
+            while True:
+                response = await self.bot.wait_for('message', check=lambda message: all([message.channel == ctx.channel, message.author == ctx.author]), timeout=60)
+                converter = commands.TextChannelConverter()
+                try:
+                    channel = await converter.convert(response.content, ctx)
+                except commands.ChannelNotFound:
+                    attempts += 1
+                    await response.delete()
+                    if attempts >= 5:
+                        await ctx.send("You sent invalid response too many times, Run the command again to restart the setup.")
+                        return
+
+                    await ctx.send("Hey, I can't find that channel, Maybe you made a typo or I don't have permission to view that channel. Try again.")
+                    continue
+
+                break
+
+        await response.delete()
+        message = await ctx.send(Emoji.loading+" Give me a fat minute while I set up confessions in {}...".format(channel.mention))
+
+        collection = self.bot.mongo['guilds_config']['confessions']
+        
+        post = {
+            '_id': ctx.guild.id, 
+            'channel_id': channel.id, 
+            'embed_color': 0,
+            'toggle': 1,
+            'allow_nsfw': 0,
+            'allow_images': 0,
+            'blacklist': []
+        }
+        await collection.insert_one(post)
+
+        embed = discord.Embed(
+            title=Emoji.success+" Setup Complete",
+            description="Confession are now setup in {0.mention} ! Members can use `sly confess` command in bot's DMs to post completely anonymous confessions."
+            )
+        embed.color = Color.success
+        embed.add_field(
+            name=Emoji.info+" Quick Tips to manage confessions",
+            value="""Here are some quick tips for server moderators to properly manage confessions:
+
+            -- Members with `MANAGE_MESSAGES` permissions can manage confessions.
+            -- If a confession is breaking your rules, you can use `mute-confession <message_link>` to mute that confession author without revealing the author.
+            -- If a confession is really offending and break [bot's rules]({}/topics/rules) you can report it using `report-confession` command and we will take actions against that user."
+            -- If things get too out of hand, Use the `disable-confessions` command to temporarily disable confessions, you can enable again using `enable-confessions` command.
+            """)
+
+        await message.edit(embed=Emoji.success+' Confessions are now enabled in {}', content=None)
 
 
 def setup(bot):
