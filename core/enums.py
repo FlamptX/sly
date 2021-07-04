@@ -27,3 +27,8 @@ class Color:
     info      = 4879080
     neutral   = 3092790
     success   = 5038123
+
+class NSFWStatus:
+    not_nsfw     = 0
+    nsfw         = 1
+    undetectable = 2
