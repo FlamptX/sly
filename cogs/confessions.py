@@ -88,6 +88,11 @@ class Confessions(commands.Cog):
             await ctx.send("You gotta specify a confession that you want to post or at least attach an image.")
             return
 
+        if message:
+            if len(message) > 4000:
+                await ctx.send("Enthuasism is good but there's a 4000 characters limit, Shorten your confession!")
+                return
+
         if len(ctx.message.attachments):
             image = ctx.message.attachments[0]
             if not image.content_type.startswith('image/'):
@@ -106,7 +111,7 @@ class Confessions(commands.Cog):
         if len(guilds) == 0:
             embed = discord.Embed(title="No servers found", description="I cannot find any servers in which you can post a confessions. There are some potential causes:\n\n-- None of your servers has setup confessions in the server.\n-- You have been blacklisted from posting confessions.")
             embed.add_field(name="What can you do as a server member?", value="You can ask the server moderators of the server in which you want to post confessions. Most probably confessions might not be setup or disabled or you might be blacklisted.", inline=False)
-            embed.add_field(name="What can you do as a server owner/moderator?", value="You can setup confessions in your server by using `sly setup confessions` command.", inline=False)
+            embed.add_field(name="What can you do as a server owner/moderator?", value="You can setup confessions in your server by using `sly config confessions setup` command.", inline=False)
             await ctx.send(embed=embed)
             return
 
