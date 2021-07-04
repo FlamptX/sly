@@ -75,8 +75,8 @@ class Confessions(commands.Cog):
     @commands.command(
         help='Post a completely anonymous confession in the confession channel. This command only work in DMs!',
         brief='/confessions/posting',
-        description='`confession` (Required): The confession to post. In favor of long message writers, This can be upto 4000 characters long.',
-        usage='confess <message>'
+        description='`confession` (Required): The confession to post. In favor of long message writers, This can be upto 4000 characters long.\n`image` (Optional): The image to include in confessions. To include an image, target server must have confession images settings enabled using `config confessions allow-images`',
+        usage='confess <message> [image]'
         
         )
     async def confess(self, ctx, *, message=None):
