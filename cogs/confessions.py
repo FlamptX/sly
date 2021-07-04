@@ -195,19 +195,20 @@ class Confessions(commands.Cog,
     async def setupconfessions(self, ctx, channel: discord.TextChannel = None):
         if not channel:
             embed = discord.Embed(title="Setting up Confessions • Channel", description="Welcome to confessions setup menu, Real quick, Mention the text channel where your members will post the confessions.")
-            await ctx.send(embed=embed)
+            init_message = await ctx.send(embed=embed)
             
             attempts = 0
             while True:
                 response = await self.bot.wait_for('message', check=lambda message: all([message.channel == ctx.channel, message.author == ctx.author]), timeout=60)
+                await init_message.delete()
                 converter = commands.TextChannelConverter()
                 try:
-                    channel = await converter.convert(response.content, ctx)
+                    channel = await converter.convert(ctx, response.content)
                 except commands.ChannelNotFound:
                     attempts += 1
                     await response.delete()
                     if attempts >= 5:
-                        await ctx.send("You sent invalid response too many times, Run the command again to restart the setup.")
+                        init_message = await ctx.send("You sent invalid response too many times, Run the command again to restart the setup.")
                         return
 
                     await ctx.send("Hey, I can't find that channel, Maybe you made a typo or I don't have permission to view that channel. Try again.")
@@ -215,8 +216,7 @@ class Confessions(commands.Cog,
 
                 break
 
-        await response.delete()
-        message = await ctx.send(Emoji.loading+" Give me a fat minute while I set up confessions in {}...".format(channel.mention))
+        message = await ctx.send(Emoji.lookup+" Give me a fat minute while I set up confessions in {}...".format(channel.mention))
 
         collection = self.bot.mongo['guilds_config']['confessions']
         
@@ -233,20 +233,14 @@ class Confessions(commands.Cog,
 
         embed = discord.Embed(
             title=Emoji.success+" Setup Complete",
-            description="Confession are now setup in {0.mention} ! Members can use `sly confess` command in bot's DMs to post completely anonymous confessions."
+            description="Confession are now setup in {0.mention} ! Members can use `sly confess` command in bot's DMs to post completely anonymous confessions.".format(channel)
             )
         embed.color = Color.success
         embed.add_field(
             name=Emoji.info+" Quick Tips to manage confessions",
-            value="""Here are some quick tips for server moderators to properly manage confessions:
+            value="""Here are some quick tips for server moderators to properly manage confessions:\n\n-- Members with `MANAGE_MESSAGES` permissions can manage confessions.\n\n-- If a confession is breaking your rules, you can simply use `mute-confession` to mute that confession author without revealing the author.\n\n-- If a confession is really offending and break [bot's rules]({}/topics/rules) you can report it using `report-confession` command and we will take actions against that user."\n\n-- If things get too out of hand, Use the `disable-confessions` command to temporarily disable confessions, you can enable again using `enable-confessions` command.""".format(self.bot.config.docs))
 
-            -- Members with `MANAGE_MESSAGES` permissions can manage confessions.
-            -- If a confession is breaking your rules, you can use `mute-confession <message_link>` to mute that confession author without revealing the author.
-            -- If a confession is really offending and break [bot's rules]({}/topics/rules) you can report it using `report-confession` command and we will take actions against that user."
-            -- If things get too out of hand, Use the `disable-confessions` command to temporarily disable confessions, you can enable again using `enable-confessions` command.
-            """)
-
-        await message.edit(embed=Emoji.success+' Confessions are now enabled in {}', content=None)
+        await message.edit(embed=embed, content=None)
 
 
 def setup(bot):
