@@ -1,5 +1,16 @@
-import sqlite3
+import requests
 
-con = sqlite3.connect('../sqlite/store.db')
-con.execute('CREATE TABLE IF NOT EXISTS confessions_reports(confession_id integer, author_id integer, guild_id integer, reporter_id integer, confession_content integer)')
-con.commit()
+url = "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw"
+
+# Don't go on the link below as it might be NSFW. It is here for testing the API
+payload = "{\"url\": \"https://images-ext-2.discordapp.net/external/O5Oxq_bx4rQvfFoe05k836o3fq0aV_tSJiWlp1uQJeg/https/i.redd.it/1vaasl5xk6871.png?width=676&height=556\"}"
+headers = {
+    'content-type': "application/json",
+    'x-rapidapi-key': "",
+    'x-rapidapi-host': "nsfw-image-classification1.p.rapidapi.com"
+    }
+
+response = requests.request("POST", url, data=payload, headers=headers)
+
+json = response.json()
+print(round(json['NSFW_Prob']))
