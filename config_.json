@@ -28,6 +28,9 @@
         "cogs.confessions",
         "cogs.help"
 
-    ]
+    ],
+
+    "nsfw_detection_api": "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw",
+    "nsfw_detection_api_key": "..."
 
 }
