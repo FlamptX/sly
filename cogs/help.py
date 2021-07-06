@@ -17,7 +17,11 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
     def parse_cogname(self, cog):
         names = {
             'confessions': ':performing_arts: Confessions',
-            'image': ':camera: Image Manipulation'
+            'image': ':camera: Image Manipulation',
+            'utility': ':wrench: Utility',
+            'games': ':video_game: Games',
+            'bot': ':robot: Bot Stuff',
+            'fun': ':joy: Fun & Memes'
         }
         return names[cog.qualified_name]
 
@@ -66,7 +70,10 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
             elif key.qualified_name in ['Admin', 'HelpCommand']:
                 pass
             else:
-                embed.add_field(name=self.parse_cogname(key), value='`{}help {}`'.format(self.context.bot.prefixes_cache[str(self.context.guild.id)], key.qualified_name))
+                embed.add_field(
+                    name=self.parse_cogname(key), 
+                    value='`{}help {}`'.format(self.context.bot.prefixes_cache[str(self.context.guild.id)], key.qualified_name),
+                    inline=False)
         await channel.send(embed=embed)
 
 
