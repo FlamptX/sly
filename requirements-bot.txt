@@ -1,3 +1,5 @@
 discord.py==1.7.3
 aiohttp
 ytpy
+colorama
+git+https://github.com/Rapptz/discord-ext-menus
