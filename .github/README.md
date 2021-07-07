@@ -6,9 +6,13 @@
 
 ## 💡 Features
 - 🎭 **Anonymous Confessions** — Confessions that are so anonyomous that server mods and owners can't find out who posted.
+
 - 😂 **Fun Commands** — Cool fun commands to cure your boredom featuring games, rates, and more!
+
 - 😸 **Easter eggs** — Easter eggs to make the convos funnier.
+
 - 🛠️ **Utility** — Utility commands to make your life easier including AFK system, web searches, infos and more.
+
 - ⚙️ **Settings** — Interactive setting commands to make Sly work as you desire.
 
 ## 🔌 Self hosting
