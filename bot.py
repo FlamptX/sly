@@ -46,10 +46,13 @@ class Sly(commands.Bot):
             'sly ', 'Sly ', 'sLy ', 'slY ', 'SLy ', 'sLY ', 'SLY ']
 
         if isinstance(message.channel, DMChannel):
-            return insensitive_prefixes_default
+            return commands.when_mentioned_or(*insensitive_prefixes_default)(self, message)
 
         if str(message.guild.id) in self.prefixes_cache:
-            return self.prefixes_cache[str(message.guild.id)]
+            if isinstance(self.prefixes_cache[str(message.guild.id)], str):
+                return commands.when_mentioned_or(*[self.prefixes_cache[str(message.guild.id)]])(self, message)
+
+            return commands.when_mentioned_or(*self.prefixes_cache[str(message.guild.id)])(self, message)
 
         prefix = await self.mongo.fetch_one_with_id(message.guild.id, database='guilds_config', collection='behaviour')
         if prefix == None:
@@ -61,7 +64,11 @@ class Sly(commands.Bot):
             prefix = insensitive_prefixes_default
 
         self.prefixes_cache[str(message.guild.id)] = prefix
-        return prefix
+
+        if isinstance(prefix, str):
+            return commands.when_mentioned_or(*[prefix])(self, message)
+
+        return commands.when_mentioned_or(*prefix)(self, message)
 
 def filter_exts(config, ignore_exts=[]):
     return [ext for ext in config.exts if not ext in ignore_exts]
