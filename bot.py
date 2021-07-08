@@ -25,6 +25,7 @@ class Sly(commands.Bot):
 
         super().__init__(
             command_prefix=commands.when_mentioned_or(self.get_prefix),
+            case_insensitive=True,
             intents=intents,
             owner_ids=self.config.owners
             )
