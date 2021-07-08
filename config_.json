@@ -32,6 +32,7 @@
         "cogs.botstuff",
         "cogs.eggs",
         "cogs.settings",
+        "cogs.admin",
         "cogs.guild_listeners",
         "cogs.help"
 
