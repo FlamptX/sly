@@ -42,7 +42,7 @@ class Sly(commands.Bot):
 
     async def get_prefix(self, message):
         if isinstance(message.channel, DMChannel):
-            return '-'
+            return 'sly '
 
         if str(message.guild.id) in self.prefixes_cache:
             return self.prefixes_cache[str(message.guild.id)]
@@ -50,6 +50,8 @@ class Sly(commands.Bot):
         prefix = await self.mongo.fetch_one_with_id(message.guild.id, database='guilds_config', collection='behaviour')
         if prefix == None:
             prefix = 'sly '
+        else:
+            prefix = prefix['prefix']
 
         self.prefixes_cache[str(message.guild.id)] = prefix
         return prefix
