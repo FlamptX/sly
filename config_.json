@@ -1,0 +1,33 @@
+{
+    "bots": {
+        "production": {
+            "token": "...",
+            "debug": false
+        },
+        "indev": {
+            "token": "...",
+            "debug": true
+        }
+    },
+    "owners": [611448893904781312],
+    "mongo": {
+        "production": {
+            "uri": "..."
+        },
+        "indev": {
+            "uri": "..."
+        }
+    },
+    "webhooks": {
+        "error_logging": "...",
+        "confessions_reports": "...",
+    },
+    "quit_on_load_error": false,
+    "docs": "https://slybot.gitbook.io/",
+    "exts": [
+        "cogs.confessions",
+        "cogs.help"
+
+    ]
+
+}
