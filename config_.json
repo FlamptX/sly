@@ -26,6 +26,7 @@
     "docs": "https://slybot.gitbook.io/",
     "exts": [
         "cogs.confessions",
+        "cogs.image",
         "cogs.help"
 
     ],
