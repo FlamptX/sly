@@ -14,9 +14,22 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
         self.config = config
         super().__init__()
 
+    def parse_cogname(self, cog):
+        names = {
+            'confessions': '\U0001f3ad Confessions'
+        }
+        return names[cog.qualified_name]
+
     async def send_cog_help(self, cog):
         '''No cog help. Sheeeesh!'''
-        return
+        channel = self.get_destination()
+        cmds = cog.get_commands()
+
+        embed = discord.Embed(title=cog.qualified_name.title(), description=cog.description)
+        embed.color = Color.info
+        embed.add_field(name="Commands", value='\n'.join(['`'+command.name+'`' for command in cmds]))
+        embed.add_field(name="More info", value="For more information on a command, Use `help <command>` command.", inline=False)
+        await channel.send(embed=embed)
 
     async def send_group_help(self, group):
         '''
@@ -40,7 +53,21 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
         await channel.send(embed=embed)
 
     async def send_bot_help(self, mapping):
-        pass
+        channel = self.get_destination()
+        embed = discord.Embed(
+            title = ":question: Help Panel",
+            description = "These are the list of all the categories, Use command for the respective category to get list of commands of that specific category."
+            )
+        embed.color = Color.info
+        for key in mapping:
+            if key == None:
+                pass
+            elif key.qualified_name in ['Admin', 'HelpCommand']:
+                pass
+            else:
+                embed.add_field(name=self.parse_cogname(key), value='`{}help {}`'.format(self.context.bot.prefixes_cache[str(self.context.guild.id)], key.qualified_name))
+        await channel.send(embed=embed)
+
 
     async def send_command_help(self, command):
         '''
