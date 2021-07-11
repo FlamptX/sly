@@ -16,7 +16,8 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
 
     def parse_cogname(self, cog):
         names = {
-            'confessions': '\U0001f3ad Confessions'
+            'confessions': ':performing_arts: Confessions',
+            'image': ':camera: Image Manipulation'
         }
         return names[cog.qualified_name]
 
@@ -25,9 +26,9 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
         channel = self.get_destination()
         cmds = cog.get_commands()
 
-        embed = discord.Embed(title=cog.qualified_name.title(), description=cog.description)
+        embed = discord.Embed(title=self.parse_cogname(cog), description=cog.description)
         embed.color = Color.info
-        embed.add_field(name="Commands", value='\n'.join(['`'+command.name+'`' for command in cmds]))
+        embed.add_field(name="Commands", value=', '.join(['`'+command.name+'`' for command in cmds]))
         embed.add_field(name="More info", value="For more information on a command, Use `help <command>` command.", inline=False)
         await channel.send(embed=embed)
 
