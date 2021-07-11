@@ -10,8 +10,8 @@ def _dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-async def evalsql(db, sql, vals:tuple=(), fetch=None):
-    conn = await aiosqlite.connect(db)
+async def evalsql(database, sql, vals:tuple=(), fetch=None):
+    conn = await aiosqlite.connect(database)
     conn.row_factory = _dict_factory
     cursor = await conn.cursor()
     cursor = await cursor.execute(sql, vals)
