@@ -31,6 +31,7 @@
         "cogs.fun",
         "cogs.utility",
         "cogs.botstuff",
+        "cogs.eggs",
         "cogs.help"
 
     ],
