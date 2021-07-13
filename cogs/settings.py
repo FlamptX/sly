@@ -45,6 +45,7 @@ class Settings(commands.Cog, name="config", description="Decide how Sly function
         await collection.update_one(post, update)
 
         await message.edit(content=Emoji.success+' Easter eggs have been {}'.format('enabled. I will send funny messages or react with funny reactions on certain moments. :wink:' if mode == 'enable' else 'disabled'))
+        
 
     @commands.command(name='set-prefix',
         help=utils.createhelp('Change server prefix of this server.', '`MANAGE_SERVER`'),
@@ -80,6 +81,7 @@ class Settings(commands.Cog, name="config", description="Decide how Sly function
         await collection.update_one(post, update)
 
         await message.edit(content=Emoji.success+' Prefix has been set to: {prefix}, In order to use any command, you need to use new prefix, e.g `{prefix}help`. You can use `{prefix}reset-prefix` to reset it to `sly`.'.format(prefix=prefix))
+        self.bot.prefixes_cache[str(ctx.guild.id)] = prefix
 
     @commands.command(name='reset-prefix',
         help=utils.createhelp('Resets the server prefix to default.', '`MANAGE_SERVER`'),
@@ -113,6 +115,7 @@ class Settings(commands.Cog, name="config", description="Decide how Sly function
         await collection.update_one(post, update)
 
         await message.edit(content=Emoji.success+' Prefix has been reset to: `sly`, In order to use any command, you need to use new prefix, e.g `sly help`.')
+        self.bot.prefixes_cache[str(ctx.guild.id)] = 'sly '
 
     @commands.command(name='delete-tracking',
         help=utils.createhelp('Enable or disable [recent delete messages tracking](https://slybot.gitbook.io/topics/tracking) in this server. `showdelete` command is powered by thing setting.', '`MANAGE_MESSAGES`'),
