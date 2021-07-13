@@ -186,7 +186,7 @@ class Confessions(commands.Cog,
         if image != None:
             embed.set_image(url=image.url)
 
-        embed.set_footer(text='Use "report-confession" command to report this confession if it is offending.')
+        embed.set_footer(text='Use "mute-confession" command to mute rules-breaking confessions.')
         conf = await channel.send(embed=embed)
         await ctx.send("Kaboom! Your completely anonymous confession has been sent in <#{0.id}>.".format(channel))
 

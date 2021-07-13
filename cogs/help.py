@@ -73,7 +73,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(
                     name=self.parse_cogname(key), 
                     value='`{}help {}`'.format(self.context.bot.prefixes_cache[str(self.context.guild.id)], key.qualified_name),
-                    inline=False)
+                    inline=True)
         await channel.send(embed=embed)
 
 

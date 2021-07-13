@@ -23,7 +23,7 @@ class Eggs(commands.Cog):
                 choice = self.eggs[message.content.lower()]['type']
 
             if random.randint(1, 20) == random.randint(1, 20):
-                conf = await self.bot.mongo.fetch_one_with_id(message.guild.id, database='guilds_config', 'behaviour')
+                conf = await self.bot.mongo.fetch_one_with_id(message.guild.id, database='guilds_config', collection='behaviour')
                 
                 if conf == None:
                     return
@@ -31,7 +31,7 @@ class Eggs(commands.Cog):
                     pass
                 else:
                     return
-                     
+
                 if choice == 'respond':
                     await message.reply(random.choice(self.eggs[message.content.lower()]['on_respond']['respond_with']))
                 elif choice == 'react':

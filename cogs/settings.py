@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 
+from core.enums import Emoji, Color
+from core import utils
+
 class Settings(commands.Cog, name="config", description="Decide how Sly functions for this server or for you."):
     def __init__(self, bot):
         self.bot = bot
