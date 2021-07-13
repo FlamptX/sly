@@ -19,7 +19,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
             'confessions': ':performing_arts: Confessions',
             'image': ':camera: Image Manipulation',
             'utility': ':wrench: Utility',
-            'games': ':video_game: Games',
+            'config': ':gear: Config',
             'bot': ':robot: Bot Stuff',
             'fun': ':joy: Fun & Memes'
         }
