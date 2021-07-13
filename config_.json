@@ -27,7 +27,6 @@
     "exts": [
         "cogs.confessions",
         "cogs.image",
-        "cogs.games",
         "cogs.fun",
         "cogs.utility",
         "cogs.botstuff",
