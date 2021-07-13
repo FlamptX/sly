@@ -67,7 +67,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
         for key in mapping:
             if key == None:
                 pass
-            elif key.qualified_name in ['Admin', 'HelpCommand', 'Eggs']:
+            elif key.qualified_name in ['Admin', 'HelpCommand', 'Eggs', 'GuildListeners']:
                 pass
             else:
                 embed.add_field(

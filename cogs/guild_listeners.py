@@ -16,13 +16,13 @@ class GuildListeners(commands.Cog):
             })
         embed = discord.Embed(title=":wave: Hi peeps!", description="I'm Sly and I'm here to make day of each and everyone here, I hope ya'll like me and I'll try my best to entertain ya'll.")
         embed.add_field(name="Help Command", value="My prefix is `sly`, you can use `sly help` to see all commands and categories! :ok_hand:", inline=False)
-        embed.add_field(name="Some links you might wanna check out", value="- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly)\n- [Website](https://sly-bot.web.app)\n- [Status](https://sly-bot.web.app/status.html)\n- [Support & Community server](https://sly-bot.web.app/discord.html)\n- [Invite](https://sly-bot.web.app/invite.html)", inline=False)
+        embed.add_field(name="Some links you might wanna check out", value="- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly/issues)\n- [Website (Coming soon...)](https://sly-bot.web.app)\n- [Status](https://bit.ly/weebotstatus)\n- [Support & Community server](https://dsc.gg/discordbotdevs)\n- [Invite](https://dsc.gg/slybot)", inline=False)
         embed.color = discord.Color.random()
 
         for i in guild.channels:
             if isinstance(i, discord.TextChannel):
                 if i.permissions_for(guild.me).send_messages:
-                    await ctx.send(embed=embed)
+                    await i.send(embed=embed)
                     break
 
     @commands.Cog.listener()
@@ -33,7 +33,7 @@ class GuildListeners(commands.Cog):
         await self.bot.mongo['guilds_config']['confessions'].delete_one({
             '_id': guild.id
             })
-        
+
 
     
 def setup(bot):
