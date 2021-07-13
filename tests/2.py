@@ -1,5 +1,12 @@
-print(int('0xffffff', 16))
-print(str(None), str(None).__class__.__name__)
+results = {
+            [0, 0]: 2,
+            [0, 1]: 1,
+            [0, 2]: 0,
+            [1, 0]: 0,
+            [1, 1]: 2,
+            [1, 2]: 1,
+            [2, 0]: 1,
+            [2, 1]: 0,
+            [2, 2]: 2,
 
-a = {'a': 'b', 'c': 'd'}
-print(a.values())
+        }
