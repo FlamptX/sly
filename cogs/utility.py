@@ -58,7 +58,7 @@ class Utility(commands.Cog, name="utility", description="These are some of the c
 
         self.bot.afks[str(ctx.author.id)][str(ctx.guild.id)] = {}
         self.bot.afks[str(ctx.author.id)][str(ctx.guild.id)]['message'] = message
-        self.bot.afks[str(ctx.author.id)][str(ctx.guild.id)]['set_on'] = format_time(datetime.utcnow())
+        self.bot.afks[str(ctx.author.id)][str(ctx.guild.id)]['set_on'] = datetime.utcnow().timestamp()
         await ctx.send(Emoji.success+" Set your AFK message to: **{}**\n\nThis will be removed when you send a message again.".format(message))
 
     @commands.command(
@@ -309,16 +309,17 @@ class Utility(commands.Cog, name="utility", description="These are some of the c
                 if str(mention.id) in self.bot.afks:
                     try:
                         afk_data = self.bot.afks[str(mention.id)][str(message.guild.id)]
-                        await message.channel.send("{} ({})".format(afk_data['message'], afk_data['set_on']))
+                        await message.channel.send("{} ({})".format(afk_data['message'], time.ctime(afk_data['set_on'])))
                     except KeyError:
                         return
         if str(message.author.id) in self.bot.afks:
             if str(message.guild.id) in self.bot.afks[str(message.author.id)]:
-                self.bot.afks[str(message.author.id)].pop(str(message.guild.id))
-                await message.channel.send(message.author.mention+" Your AFK has been removed. :ok_hand:")
+                if datetime.utcnow().timestamp() - self.bot.afks[str(message.author.id)][str(message.guild.id)]['set_on'] >= 30:
+                    self.bot.afks[str(message.author.id)].pop(str(message.guild.id))
+                    await message.channel.send(message.author.mention+" Your AFK has been removed. :ok_hand:")
 
-                if self.bot.afks[str(message.author.id)] == {}:
-                    self.bot.afks.pop(str(message.author.id))
+                    if self.bot.afks[str(message.author.id)] == {}:
+                        self.bot.afks.pop(str(message.author.id))
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
