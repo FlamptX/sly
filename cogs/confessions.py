@@ -246,7 +246,7 @@ class Confessions(commands.Cog,
             'toggle': 1,
             'allow_nsfw': 0,
             'allow_images': 0,
-            'blacklist': []
+            'blacklist': {}
         }
         await collection.insert_one(post)
 
