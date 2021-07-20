@@ -324,7 +324,7 @@ class Confessions(commands.Cog,
         }
 
         if not mode in ['enable', 'disable']:
-            await ctx.send(Emoji.info+" "+' Image confessions are currently '+replacers[config['allow_images']]+'. Use `image-confessions disable` or `nsfw-confessions enable` to change that.')
+            await ctx.send(Emoji.info+" "+' Image confessions are currently '+replacers[config['allow_images']]+'. Use `image-confessions disable` or `image-confessions enable` to change that.')
             return
 
         if mode == 'enable':
@@ -502,6 +502,55 @@ class Confessions(commands.Cog,
 
         await message.edit(content=Emoji.success+' Confession author has been successfully unmuted.')
 
+    @commands.command(name='toggle-confessions',
+        help=utils.createhelp('Toggles confessions enabled or disabled in the server.', '`MANAGE_CHANNELS`'),
+        description="`mode` (Required): Can either be `enable` or `disable`",
+        brief="/confessions/toggle",
+        usage="toggle-confessions <mode>"
+        )
+    @commands.guild_only()
+    @commands.has_permissions(manage_channels=True)
+    async def toggleconfessions(self, ctx, mode = None):
+        config = await self.bot.mongo.fetch_one_with_id(ctx.guild.id, database='guilds_config', collection='confessions')
+
+        if config == None:
+            await ctx.send(Emoji.error+" Confessions are not setup in this server, Set them up first! Use `setup-confessions` command.")
+            return
+
+        replacers = {
+            1: 'enabled',
+            0: 'disabled'
+
+        }
+
+        if not mode in ['enable', 'disable']:
+            await ctx.send(Emoji.info+" "+' Confessions are currently '+replacers[config['toggle']]+'. Use `toggle-confessions disable` or `toggle-confessions enable` to change that.')
+            return
+
+        if mode == 'disable':
+            await ctx.send(Emoji.warning+" Attention fella! If you disable confessions, Confessions will be temporarily disabled. You can use `toggle-confessions enable` to enable them again. Reply with `proceed` to continue or `cancel` to cancel.")
+            response = await self.bot.wait_for('message', check=lambda message: all([message.channel == ctx.channel and message.author == ctx.author and message.content.lower() in ['proceed', 'cancel']]))
+            if response.content.lower() == 'proceed':
+                pass
+            else:
+                await ctx.send(Emoji.success+" Operation cancelled successfully. Phew.")
+                return
+
+        message = await ctx.send(Emoji.lookup+" Gimme a minute...")
+
+        collection = self.bot.mongo['guilds_config']['confessions']
+        
+        post = {
+            '_id': ctx.guild.id
+        }
+        update = {
+            '$set': {
+                'toggle': 1 if mode == 'enable' else 0
+            }
+        }
+        await collection.update_one(post, update)
+
+        await message.edit(content=Emoji.success+' Confessions have been {}'.format('enabled' if mode == 'enable' else 'disabled. Use `toggle-confessions enable` to enable them back.'))
 
     
     
