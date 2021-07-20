@@ -209,7 +209,7 @@ class Confessions(commands.Cog,
         config = await self.bot.mongo.fetch_one_with_id(ctx.guild.id, database='guilds_config', collection='confessions')
 
         if config != None:
-            await ctx.send(Emoji.error+" Confessions are already setup in this server. Use `update-confessions-channel` to update the channel or use `help confessions` command to see list of all customisation command.")
+            await ctx.send(Emoji.error+" Confessions are already setup in this server. Use `reset-confessions` and then this command to update the channel or use `help confessions` command to see list of all customisation command.")
             return
 
         if not channel:
@@ -551,6 +551,34 @@ class Confessions(commands.Cog,
         await collection.update_one(post, update)
 
         await message.edit(content=Emoji.success+' Confessions have been {}'.format('enabled' if mode == 'enable' else 'disabled. Use `toggle-confessions enable` to enable them back.'))
+
+    @commands.command(name='reset-confessions',
+        help=utils.createhelp('Resets the confessions. Basically disable confessions completely. After this has been done, You will have to use `setup-confessions` command again.', '`MANAGE_SERVER`'),
+        description="This command takes no argument.",
+        brief="/confessions/reset",
+        usage="reset-confessions"
+        )
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def resetconfessions(self, ctx, mode = None):
+        await ctx.send(Emoji.warning+" Attention fella! If you reset confessions, Confessions will be completely removed from server. You can use `setup-confessions` to setup again. Reply with `proceed` to continue or `cancel` to cancel.")
+        response = await self.bot.wait_for('message', check=lambda message: all([message.channel == ctx.channel and message.author == ctx.author and message.content.lower() in ['proceed', 'cancel']]))
+        if response.content.lower() == 'proceed':
+            pass
+        else:
+            await ctx.send(Emoji.success+" Operation cancelled successfully. Phew.")
+            return
+
+        message = await ctx.send(Emoji.lookup+" Gimme a minute...")
+
+        collection = self.bot.mongo['guilds_config']['confessions']
+        
+        post = {
+            '_id': ctx.guild.id
+        }
+        await collection.delete_one(post)
+
+        await message.edit(content=Emoji.success+' Confessions have been reset! Use `setup-confessions` set them again.')
 
     
     
