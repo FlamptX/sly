@@ -77,7 +77,7 @@ class Bot(commands.Cog, name="bot", description="Some bot related commands that 
         )
     async def links(self, ctx):
         embed = discord.Embed(title="Important Links", color=Color.neutral)
-        embed.description = "Here are some cool links that you might want to checkout:\n\n- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly)\n- [Website](https://sly-bot.web.app)\n- [Status](https://sly-bot.web.app/status.html)\n- [Support & Community server](https://sly-bot.web.app/discord.html)\n- [Invite](https://sly-bot.web.app/invite.html)"
+        embed.description = "Here are some cool links that you might want to checkout:\n\n- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly)\n- [Website (Coming soon...)](https://sly-bot.web.app)\n- [Status](https://bit.ly/weebotstatus)\n- [Support & Community server](https://discord.gg/38G3TDabg5)\n- [Invite](https://dsc.gg/slybot)"
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -91,7 +91,7 @@ class Bot(commands.Cog, name="bot", description="Some bot related commands that 
         embed.add_field(name="Creator", value="Sly was created by nerdguyahmad#3195 along with the cool community on [GitHub](https://github.com/nerdguyahmad/sly).")
         embed.add_field(name="Version", value="v1.0.0 [BETA]", inline=False)
         embed.add_field(name="Collaborate", value="Help us make Sly better on [GitHub](https://github.com/nerdguyahmad/sly)", inline=False)
-        embed.add_field(name="Links", value="- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly)\n- [Website](https://sly-bot.web.app)\n- [Status](https://sly-bot.web.app/status.html)\n- [Support & Community server](https://sly-bot.web.app/discord.html)\n- [Invite](https://sly-bot.web.app/invite.html)")
+        embed.add_field(name="Links", value="- [Docs](https://slybot.gitbook.io)\n- [GitHub](https://github.com/nerdguyahmad/sly)\n- [Issue Tracker](https://github.com/nerdguyahmad/sly)\n- [Website (Coming soon...)](https://sly-bot.web.app)\n- [Status](https://bit.ly/weebotstatus)\n- [Support & Community server](https://discord.gg/38G3TDabg5)\n- [Invite](https://dsc.gg/slybot)")
         await ctx.send(embed=embed)
 
 
