@@ -41,7 +41,8 @@ class Sly(commands.Bot):
         self.prefixes_cache = {}
 
     async def get_prefix(self, message):
-        insensitive_prefixes_default = ['sly', 'Sly', 'sLy', 'slY', 'SLy', 'sLY']
+        insensitive_prefixes_default = [
+            'sly ', 'Sly ', 'sLy ', 'slY ', 'SLy ', 'sLY ', 'SLY ']
 
         if isinstance(message.channel, DMChannel):
             return insensitive_prefixes_default
