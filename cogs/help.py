@@ -64,6 +64,10 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
             description = "These are the list of all the categories, Use command for the respective category to get list of commands of that specific category."
             )
         embed.color = Color.info
+        if isinstance(self.context.bot.prefixes_cache[str(self.context.guild.id)], list):
+            prefix = self.context.bot.prefixes_cache[str(self.context.guild.id)][0]
+        else:
+            prefix = self.context.bot.prefixes_cache[str(self.context.guild.id)][0]
         for key in mapping:
             if key == None:
                 pass
@@ -72,7 +76,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
             else:
                 embed.add_field(
                     name=self.parse_cogname(key), 
-                    value='`{}help {}`'.format(self.context.bot.prefixes_cache[str(self.context.guild.id)], key.qualified_name),
+                    value='`{}help {}`'.format(prefix, key.qualified_name),
                     inline=True)
         await channel.send(embed=embed)
 
