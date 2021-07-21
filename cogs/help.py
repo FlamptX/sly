@@ -67,7 +67,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
         if isinstance(self.context.bot.prefixes_cache[str(self.context.guild.id)], list):
             prefix = self.context.bot.prefixes_cache[str(self.context.guild.id)][0]
         else:
-            prefix = self.context.bot.prefixes_cache[str(self.context.guild.id)][0]
+            prefix = self.context.bot.prefixes_cache[str(self.context.guild.id)]
         for key in mapping:
             if key == None:
                 pass
