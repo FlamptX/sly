@@ -55,9 +55,9 @@ class Sly(commands.Bot):
         else:
             prefix = prefix['prefix']
 
-        if prefix == 'sly':
+        if prefix == 'sly ':
             prefix = insensitive_prefixes_default
-            
+
         self.prefixes_cache[str(message.guild.id)] = prefix
         return prefix
 
