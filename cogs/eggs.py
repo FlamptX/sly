@@ -27,7 +27,7 @@ class Eggs(commands.Cog):
                 
                 if conf == None:
                     return
-                if conf['eggs'] == 1:
+                if conf['easters'] == 1:
                     pass
                 else:
                     return
