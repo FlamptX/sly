@@ -41,18 +41,23 @@ class Sly(commands.Bot):
         self.prefixes_cache = {}
 
     async def get_prefix(self, message):
+        insensitive_prefixes_default = ['sly', 'Sly', 'sLy', 'slY', 'SLy', 'sLY']
+
         if isinstance(message.channel, DMChannel):
-            return 'sly '
+            return insensitive_prefixes_default
 
         if str(message.guild.id) in self.prefixes_cache:
             return self.prefixes_cache[str(message.guild.id)]
 
         prefix = await self.mongo.fetch_one_with_id(message.guild.id, database='guilds_config', collection='behaviour')
         if prefix == None:
-            prefix = 'sly '
+            prefix = insensitive_prefixes_default
         else:
             prefix = prefix['prefix']
 
+        if prefix == 'sly':
+            prefix = insensitive_prefixes_default
+            
         self.prefixes_cache[str(message.guild.id)] = prefix
         return prefix
 
