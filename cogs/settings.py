@@ -118,7 +118,7 @@ class Settings(commands.Cog, name="config", description="Decide how Sly function
         await collection.update_one(post, update)
 
         await message.edit(content=Emoji.success+' Prefix has been reset to: `sly`, In order to use any command, you need to use new prefix, e.g `sly help`.')
-        self.bot.prefixes_cache[str(ctx.guild.id)] = 'sly '
+        self.bot.prefixes_cache[str(ctx.guild.id)] = ['sly ', 'Sly ', 'sLy ', 'slY ', 'SLy ', 'sLY ', 'SLY ']
 
     @commands.command(name='delete-tracking',
         help=utils.createhelp('Enable or disable [recent delete messages tracking](https://slybot.gitbook.io/topics/tracking) in this server. `showdelete` command is powered by thing setting.', '`MANAGE_MESSAGES`'),
