@@ -106,7 +106,8 @@ class Confessions(commands.Cog):
         guild_config = await self.get_confessions_config(guild)
         channel = guild.get_channel(guild_config['channel_id'])
         confession_id = random.randint(1000, 9999)
-        embed = discord.Embed(title="Confession #{}".format(confession_id), description=message)
+        embed.set_author(name="Confession #{}".format(confession_id))
+        embed.description = message
         if guild_config['embed_color'] == 0:
             embed.color = discord.Color.random()
         else:
